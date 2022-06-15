@@ -4,24 +4,27 @@
   "license": "ISC",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --mode production",
     "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^0.24.0",
     "axios-retry": "^3.2.4",
+    "dat.gui": "^0.7.7",
     "less": "^4.1.2",
-    "pixi.js": "^6.2.1",
-    "qs": "^6.10.2",
+    "package": "^1.0.1",
+    "pixi.js": "^6.4.2",
+    "qs": "^6.10.3",
     "vant": "3",
+    "vconsole": "^3.12.1",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^2.0.0",
+    "@vitejs/plugin-vue": "^2.0.1",
     "less-loader": "^10.2.0",
     "postcss-px2vp": "^1.1.2",
-    "vite": "^2.7.2",
+    "vite": "^2.7.10",
     "vite-plugin-style-import": "^1.4.1"
   }
 }
