@@ -22,6 +22,10 @@
         />
         <van-cell title="blend-modes" is-link to="/demos-basic/blend-modes" />
         <van-cell title="simplePlane" is-link to="/demos-basic/simplePlane" />
+        <h1>demos-advanced</h1>
+        <van-cell title="slots" is-link to="/demos-advanced/slots" />
+        <h1>sprite</h1>
+        <van-cell title="basic" is-link to="/sprite/basic" />
       </van-list>
     </div>
   </div>
