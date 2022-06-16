@@ -5,6 +5,7 @@
         <h1>demos-basic</h1>
         <van-cell title="container" is-link to="/demos-basic/container" />
         <van-cell title="transparent-background" is-link to="/demos-basic/transparent-background" />
+        <van-cell title="tinting" is-link to="/demos-basic/tinting" />
       </van-list>
     </div>
   </div>
