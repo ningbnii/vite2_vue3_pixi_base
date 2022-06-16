@@ -20,6 +20,7 @@
           is-link
           to="/demos-basic/particle-container"
         />
+        <van-cell title="blend-modes" is-link to="/demos-basic/blend-modes" />
       </van-list>
     </div>
   </div>
