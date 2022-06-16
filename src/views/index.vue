@@ -26,6 +26,7 @@
         <van-cell title="slots" is-link to="/demos-advanced/slots" />
         <h1>sprite</h1>
         <van-cell title="basic" is-link to="/sprite/basic" />
+        <van-cell title="texture-swap" is-link to="/sprite/texture-swap" />
       </van-list>
     </div>
   </div>
