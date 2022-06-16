@@ -43,6 +43,7 @@
           to="/sprite/animated-sprite-speed"
         />
         <van-cell title="tiling-sprite" is-link to="/sprite/tiling-sprite" />
+        <van-cell title="video" is-link to="/sprite/video" />
       </van-list>
     </div>
   </div>
