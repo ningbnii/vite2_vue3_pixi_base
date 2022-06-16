@@ -37,6 +37,11 @@
           is-link
           to="/sprite/animated-sprite-jet"
         />
+        <van-cell
+          title="animated-sprite-speed"
+          is-link
+          to="/sprite/animated-sprite-speed"
+        />
       </van-list>
     </div>
   </div>
