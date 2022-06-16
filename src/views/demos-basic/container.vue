@@ -5,13 +5,14 @@
 </template>
 <script setup>
 import * as PIXI from 'pixi.js'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import bunny from '../../assets/bunny.png'
 let myCanvas = ref(null)
 let canvasBox = ref(null)
+let app = {}
 
 onMounted(() => {
-  const app = new PIXI.Application({
+  app = new PIXI.Application({
     width: canvasBox.value.clientWidth,
     height: canvasBox.value.clientHeight,
     backgroundColor: 0x1099bb,
@@ -53,6 +54,11 @@ onMounted(() => {
     // use delta to create frame-independent transform
     container.rotation -= 0.01 * delta
   })
+})
+
+onUnmounted(() => {
+  // 销毁
+  app.destroy()
 })
 </script>
 <style lang="less" scoped>
