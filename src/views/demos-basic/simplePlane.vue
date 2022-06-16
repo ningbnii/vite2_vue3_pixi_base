@@ -51,7 +51,7 @@ onMounted(() => {
       // randomize the vertices positions a bit to create movement
       for (let i = 0; i < buffer.data.length; i += 2) {
         buffer.data[i] += Math.random() * 2 - 1
-        // buffer.data[i + 1] += Math.random() * 2 - 1
+        buffer.data[i + 1] += Math.random() * 2 - 1
       }
       // update
       buffer.update()
