@@ -32,6 +32,11 @@
           is-link
           to="/sprite/animated-sprite-explosion"
         />
+        <van-cell
+          title="animated-sprite-jet"
+          is-link
+          to="/sprite/animated-sprite-jet"
+        />
       </van-list>
     </div>
   </div>
