@@ -21,6 +21,7 @@
           to="/demos-basic/particle-container"
         />
         <van-cell title="blend-modes" is-link to="/demos-basic/blend-modes" />
+        <van-cell title="simplePlane" is-link to="/demos-basic/simplePlane" />
       </van-list>
     </div>
   </div>
