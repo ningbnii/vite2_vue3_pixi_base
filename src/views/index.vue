@@ -27,6 +27,11 @@
         <h1>sprite</h1>
         <van-cell title="basic" is-link to="/sprite/basic" />
         <van-cell title="texture-swap" is-link to="/sprite/texture-swap" />
+        <van-cell
+          title="animated-sprite-explosion"
+          is-link
+          to="/sprite/animated-sprite-explosion"
+        />
       </van-list>
     </div>
   </div>
