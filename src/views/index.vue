@@ -46,6 +46,7 @@
         <van-cell title="video" is-link to="/sprite/video" />
         <h1>text</h1>
         <van-cell title="text" is-link to="/text/text" />
+        <van-cell title="bitmap-text" is-link to="/text/bitmap-text" />
       </van-list>
     </div>
   </div>
