@@ -44,6 +44,8 @@
         />
         <van-cell title="tiling-sprite" is-link to="/sprite/tiling-sprite" />
         <van-cell title="video" is-link to="/sprite/video" />
+        <h1>text</h1>
+        <van-cell title="text" is-link to="/text/text" />
       </van-list>
     </div>
   </div>
