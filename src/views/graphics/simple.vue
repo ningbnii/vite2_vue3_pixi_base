@@ -24,7 +24,6 @@ onMounted(() => {
   myCanvas.value.appendChild(app.view)
 
   const graphics = new PIXI.Graphics()
-
   // add to stage
   app.stage.addChild(graphics)
 
