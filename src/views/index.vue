@@ -51,6 +51,7 @@
         <h1>graphics</h1>
         <van-cell title="simple" is-link to="/graphics/simple" />
         <van-cell title="advanced" is-link to="/graphics/advanced" />
+        <van-cell title="dynamic" is-link to="/graphics/dynamic" />
       </van-list>
     </div>
   </div>
