@@ -45,6 +45,9 @@ onMounted(() => {
   //   sprite.scale.y *= 1.25
   // })
 
+  // pointerdown normalize touch and mouse events
+  // click mouse-only events
+  // tap touch-only events
   app.renderer.plugins.interaction.on('pointerdown', (event) => {
     sprite.scale.x *= 1.25
     sprite.scale.y *= 1.25
