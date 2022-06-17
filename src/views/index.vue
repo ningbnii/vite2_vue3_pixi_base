@@ -59,6 +59,7 @@
           is-link
           to="/interaction/interactivity"
         />
+        <van-cell title="dragging" is-link to="/interaction/dragging" />
       </van-list>
     </div>
   </div>
