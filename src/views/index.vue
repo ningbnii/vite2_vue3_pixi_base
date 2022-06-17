@@ -50,6 +50,7 @@
         <van-cell title="web-font" is-link to="/text/web-font" />
         <h1>graphics</h1>
         <van-cell title="simple" is-link to="/graphics/simple" />
+        <van-cell title="advanced" is-link to="/graphics/advanced" />
       </van-list>
     </div>
   </div>
