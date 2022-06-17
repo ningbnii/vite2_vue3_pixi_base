@@ -48,6 +48,8 @@
         <van-cell title="text" is-link to="/text/text" />
         <van-cell title="bitmap-text" is-link to="/text/bitmap-text" />
         <van-cell title="web-font" is-link to="/text/web-font" />
+        <h1>graphics</h1>
+        <van-cell title="simple" is-link to="/graphics/simple" />
       </van-list>
     </div>
   </div>

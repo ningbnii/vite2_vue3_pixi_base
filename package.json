@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pixi/graphics-extras": "^6.4.2",
+    "@pixi/graphics-smooth": "^0.0.29",
     "axios": "^0.24.0",
     "axios-retry": "^3.2.4",
     "dat.gui": "^0.7.7",
