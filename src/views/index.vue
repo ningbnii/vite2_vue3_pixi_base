@@ -70,6 +70,8 @@
           is-link
           to="/interaction/custom-hit-area"
         />
+        <h1>mask</h1>
+        <van-cell title="graphics" is-link to="/mask/graphics" />
       </van-list>
     </div>
   </div>
