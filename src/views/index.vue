@@ -60,6 +60,11 @@
           to="/interaction/interactivity"
         />
         <van-cell title="dragging" is-link to="/interaction/dragging" />
+        <van-cell
+          title="custom-mouse-icon"
+          is-link
+          to="/interaction/custom-mouse-icon"
+        />
       </van-list>
     </div>
   </div>
