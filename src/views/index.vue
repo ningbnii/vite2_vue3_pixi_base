@@ -54,6 +54,11 @@
         <van-cell title="dynamic" is-link to="/graphics/dynamic" />
         <h1>interaction</h1>
         <van-cell title="click" is-link to="/interaction/click" />
+        <van-cell
+          title="interactivity"
+          is-link
+          to="/interaction/interactivity"
+        />
       </van-list>
     </div>
   </div>
