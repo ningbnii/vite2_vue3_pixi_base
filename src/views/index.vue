@@ -65,6 +65,11 @@
           is-link
           to="/interaction/custom-mouse-icon"
         />
+        <van-cell
+          title="custom-hit-area"
+          is-link
+          to="/interaction/custom-hit-area"
+        />
       </van-list>
     </div>
   </div>
