@@ -73,6 +73,7 @@
         <h1>mask</h1>
         <van-cell title="graphics" is-link to="/mask/graphics" />
         <van-cell title="sprite" is-link to="/mask/sprite" />
+        <van-cell title="filter" is-link to="/mask/filter" />
       </van-list>
     </div>
   </div>
