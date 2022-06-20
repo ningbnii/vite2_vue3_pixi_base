@@ -74,6 +74,8 @@
         <van-cell title="graphics" is-link to="/mask/graphics" />
         <van-cell title="sprite" is-link to="/mask/sprite" />
         <van-cell title="filter" is-link to="/mask/filter" />
+        <h1>filters-basic</h1>
+        <van-cell title="blur" is-link to="/filters-basic/blur" />
       </van-list>
     </div>
   </div>
