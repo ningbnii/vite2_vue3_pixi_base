@@ -76,6 +76,11 @@
         <van-cell title="filter" is-link to="/mask/filter" />
         <h1>filters-basic</h1>
         <van-cell title="blur" is-link to="/filters-basic/blur" />
+        <van-cell
+          title="color-matrix"
+          is-link
+          to="/filters-basic/color-matrix"
+        />
       </van-list>
     </div>
   </div>
