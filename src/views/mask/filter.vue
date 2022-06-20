@@ -56,7 +56,7 @@ onMounted(() => {
     // 生成纹理
     const texture = app.renderer.generateTexture(
       circle,
-      PIXI.SCALE_MODES.NEAREST,
+      PIXI.SCALE_MODES.LINEAR,
       1,
       rect
     )
