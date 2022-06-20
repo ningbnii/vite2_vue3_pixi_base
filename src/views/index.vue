@@ -82,9 +82,14 @@
           to="/filters-basic/color-matrix"
         />
         <van-cell
-          title="displacement-map"
+          title="displacement-map-crawlies"
           is-link
-          to="/filters-basic/displacement-map"
+          to="/filters-basic/displacement-map-crawlies"
+        />
+        <van-cell
+          title="displacement-map-flag"
+          is-link
+          to="/filters-basic/displacement-map-flag"
         />
       </van-list>
     </div>
