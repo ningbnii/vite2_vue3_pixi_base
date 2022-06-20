@@ -22,7 +22,6 @@ onMounted(() => {
   })
 
   myCanvas.value.appendChild(app.view)
-  app.stage.interactive = true
 
   // radius
   const radius = 100
@@ -42,7 +41,7 @@ onMounted(() => {
     // circle
     const circle = new PIXI.Graphics()
     circle.beginFill(0xff0000)
-    circle.drawCircle(app.screen.width / 2, app.screen.height / 2, radius)
+    circle.drawCircle(radius + blurSize, radius + blurSize, radius)
     circle.endFill()
     // blur
     const blurFilter = new PIXI.filters.BlurFilter(blurSize)
@@ -57,7 +56,7 @@ onMounted(() => {
     // 生成纹理
     const texture = app.renderer.generateTexture(
       circle,
-      PIXI.SCALE_MODES.LINEAR,
+      PIXI.SCALE_MODES.NEAREST,
       1,
       rect
     )
@@ -68,10 +67,11 @@ onMounted(() => {
     // 给bg设置遮罩
     bg.mask = mask
 
+    app.stage.interactive = true
     app.stage.on('pointermove', (e) => {
       // 更新遮罩位置
-      mask.x = e.data.global.x
-      mask.y = e.data.global.y
+      mask.x = e.data.global.x - mask.width / 2
+      mask.y = e.data.global.y - mask.height / 2
     })
   }
 })
