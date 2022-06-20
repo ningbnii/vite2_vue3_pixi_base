@@ -81,6 +81,11 @@
           is-link
           to="/filters-basic/color-matrix"
         />
+        <van-cell
+          title="displacement-map"
+          is-link
+          to="/filters-basic/displacement-map"
+        />
       </van-list>
     </div>
   </div>
