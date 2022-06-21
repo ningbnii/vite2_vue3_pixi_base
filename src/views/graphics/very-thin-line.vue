@@ -5,8 +5,10 @@
 </template>
 <script setup>
 import * as PIXI from 'pixi.js'
+import '@pixi/graphics-extras'
+import { SmoothGraphics } from '@pixi/graphics-smooth'
 import { ref, onMounted, onUnmounted } from 'vue'
-import bunnyImg from '../../assets/bunny.png'
+
 let myCanvas = ref(null)
 let canvasBox = ref(null)
 let app = {}
@@ -15,7 +17,7 @@ onMounted(() => {
   app = new PIXI.Application({
     width: canvasBox.value.clientWidth,
     height: canvasBox.value.clientHeight,
-    transparent: true,
+    // backgroundColor: 0x1099bb,
     antialias: true,
     autoDensity: true,
     resolution: window.devicePixelRatio,
@@ -23,24 +25,28 @@ onMounted(() => {
 
   myCanvas.value.appendChild(app.view)
 
-  // create a new sprite from an image path
-  const bunny = new PIXI.Sprite.from(bunnyImg)
+  const graphics = new SmoothGraphics()
 
-  // center the sprite's anchor point
-  bunny.anchor.set(0.5)
+  graphics.pivot = { x: 300, y: 300 }
+  graphics.position = { x: 300, y: 300 }
 
-  // move the sprite to the center of the screen
-  bunny.x = app.screen.width / 2
-  bunny.y = app.screen.height / 2
+  // Rectangle
+  graphics.lineStyle(0.1, 0xffffff, 1)
 
-  // add the bunny to the stage
-  app.stage.addChild(bunny)
+  graphics.drawRect(150.5, 150.5, 250, 250)
+  graphics.endFill()
 
-  // listen for animate update
-  app.ticker.add((delta) => {
-    // rotate the bunny around its center
-    bunny.rotation -= 0.01 * delta
-  })
+  graphics.moveTo(0, 0)
+  graphics.lineTo(300, 300)
+  graphics.lineTo(0, 300)
+  graphics.lineTo(0, 0)
+  graphics.endFill()
+
+  app.stage.addChild(graphics)
+
+  // app.ticker.add((delta) => {
+  //   graphics.rotation -= 0.004 * delta
+  // })
 })
 
 onUnmounted(() => {

@@ -52,6 +52,11 @@
         <van-cell title="simple" is-link to="/graphics/simple" />
         <van-cell title="advanced" is-link to="/graphics/advanced" />
         <van-cell title="dynamic" is-link to="/graphics/dynamic" />
+        <van-cell
+          title="very-thin-line"
+          is-link
+          to="/graphics/very-thin-line"
+        />
         <h1>interaction</h1>
         <van-cell title="click" is-link to="/interaction/click" />
         <van-cell

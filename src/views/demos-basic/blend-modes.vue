@@ -16,7 +16,9 @@ onMounted(() => {
     width: canvasBox.value.clientWidth,
     height: canvasBox.value.clientHeight,
     // backgroundColor: 0x1099bb,
-    // resolution: window.devicePixelRatio || 1,
+    antialias: true,
+    autoDensity: true,
+    resolution: window.devicePixelRatio,
   })
 
   myCanvas.value.appendChild(app.view)
