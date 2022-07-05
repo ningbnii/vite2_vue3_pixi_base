@@ -96,6 +96,8 @@
           is-link
           to="/filters-basic/displacement-map-flag"
         />
+        <h1>画板</h1>
+        <van-cell title="test1" is-link to="/drawing/test1" />
       </van-list>
     </div>
   </div>
