@@ -27,6 +27,7 @@ onMounted(() => {
   myCanvas.value.appendChild(app.view)
 
   let scale = window.devicePixelRatio / 2
+  scale = 1
 
   // 创建绘制画布
   let canvas = document.createElement('canvas')
@@ -60,6 +61,8 @@ onMounted(() => {
   sp.on('pointerdown', drawStart)
   sp.on('pointermove', drawMove)
   sp.on('pointerup', drawEnd)
+  let start1 = {}
+  let start2 = {}
 
   function drawStart(event) {
     // 获取触点数量
@@ -92,15 +95,24 @@ onMounted(() => {
       ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`
 
       // 获取鼠标移动的位置
-      let { x, y } = event.data.getLocalPosition(this.parent)
+      let { x, y } = event.data.global
       lastPoint = { x, y }
       ctx.beginPath()
       ctx.moveTo(lastPoint.x * scale, lastPoint.y * scale)
       isDrawing = true
     }
 
-    // 如果触点数量为2，则旋转画布、缩放画布、平移画布
+    // 获取触点id
     if (pointerCount === 2) {
+      start1 = {
+        x: event.data.originalEvent.touches[0].clientX,
+        y: event.data.originalEvent.touches[0].clientY,
+      }
+
+      start2 = {
+        x: event.data.originalEvent.touches[1].clientX,
+        y: event.data.originalEvent.touches[1].clientY,
+      }
     }
   }
 
@@ -109,7 +121,8 @@ onMounted(() => {
     let pointerCount = event.data.originalEvent.touches.length
     // 如果触点数量为1，则开始绘制
     if (pointerCount === 1 && isDrawing) {
-      let { x, y } = event.data.getLocalPosition(this.parent)
+      // let { x, y } = event.data.getLocalPosition(this.parent)
+      let { x, y } = event.data.global
 
       ctx.lineTo(x * scale, y * scale)
       ctx.stroke()
@@ -120,6 +133,24 @@ onMounted(() => {
     }
     // 如果触点数量为2，则控制旋转、缩放、移动
     if (pointerCount === 2) {
+      let end1 = {
+        x: event.data.originalEvent.touches[0].clientX,
+        y: event.data.originalEvent.touches[0].clientY,
+      }
+      let end2 = {
+        x: event.data.originalEvent.touches[1].clientX,
+        y: event.data.originalEvent.touches[1].clientY,
+      }
+      let startDistance = getDistance(start1, start2)
+      let endDistance = getDistance(end1, end2)
+      // 缩放
+      if (
+        sp.scale.x + (endDistance - startDistance) / 1000 < 5 &&
+        sp.scale.x + (endDistance - startDistance) / 1000 > 0.5
+      ) {
+        sp.scale.x += (endDistance - startDistance) / 1000
+        sp.scale.y += (endDistance - startDistance) / 1000
+      }
     }
   }
 
@@ -130,6 +161,15 @@ onMounted(() => {
     if (pointerCount === 1 && isDrawing) {
       isDrawing = false
     }
+  }
+
+  /**
+   * 获取两点间距离
+   */
+  function getDistance(point1, point2) {
+    let x = point1.x - point2.x
+    let y = point1.y - point2.y
+    return Math.sqrt(x * x + y * y)
   }
 })
 
