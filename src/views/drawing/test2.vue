@@ -65,7 +65,7 @@ onMounted(() => {
       const newDistance = getDistance(currentPosition)
       const newRotation = getRotation(currentPosition)
       // 设置container的中心点为两个触摸点的中心点
-      const center = getCenter(currentPosition)
+      // const center = getCenter(currentPosition)
       // container.pivot.set(center.x, center.y)
 
       const deltaScale = newDistance / distance
