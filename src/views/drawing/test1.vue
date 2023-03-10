@@ -6,6 +6,8 @@
 </template>
 <script setup>
 import * as PIXI from 'pixi.js'
+// import hammerjs
+import * as Hammer from 'hammerjs'
 import '@pixi/graphics-extras'
 import { ref, onMounted, onUnmounted } from 'vue'
 
@@ -21,18 +23,28 @@ onMounted(() => {
     backgroundColor: 0x1099bb,
     antialias: true,
     autoDensity: true,
-    resolution: window.devicePixelRatio,
+    resolution: window.devicePixelRatio || 1,
   })
 
   myCanvas.value.appendChild(app.view)
 
-  let scale = window.devicePixelRatio
+  let container = new PIXI.Container()
+  container.interactive = true
+  container.hitArea = new PIXI.Rectangle(
+    0,
+    0,
+    app.screen.width,
+    app.screen.height
+  )
+  app.stage.addChild(container)
+
+  let scale = window.devicePixelRatio || 1
   // scale = 1
 
   // 创建绘制画布
   let canvas = document.createElement('canvas')
-  canvas.width = app.renderer.width * scale
-  canvas.height = app.renderer.height * scale
+  canvas.width = app.screen.width
+  canvas.height = app.screen.height
   let ctx = canvas.getContext('2d')
   ctx.fillStyle = `red`
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -42,13 +54,129 @@ onMounted(() => {
   let texture = PIXI.Texture.from(canvas)
   let sp = new PIXI.Sprite(texture)
   sp.name = 'preview'
-  sp.width = app.renderer.width
-  sp.height = app.renderer.height
+  sp.width = app.screen.width
+  sp.height = app.screen.height
 
   sp.interactive = true
   sp.zIndex = 2
-  sp.hitArea = new PIXI.Rectangle(0, 0, app.renderer.width, app.renderer.height)
-  app.stage.addChild(sp)
+  sp.hitArea = new PIXI.Rectangle(0, 0, app.screen.width, app.screen.height)
+  container.addChild(sp)
+
+  // 创建hammer.js实例，绑定到renderer.view
+  const mc = new Hammer.Manager(app.view)
+  // 添加旋转手势
+  let rotate = new Hammer.Rotate()
+  mc.add(rotate)
+  // 添加缩放手势
+  let pinch = new Hammer.Pinch()
+  mc.add(pinch)
+
+  let pan = new Hammer.Pan({ pointers: 2 }) // 2指拖动
+  mc.add(pan)
+  // 旋转和缩放同时触发
+  pinch.recognizeWith([rotate, pan])
+  rotate.recognizeWith([pan])
+
+  // 添加双指拖动手势
+  // 保存拖动的起始位置
+  let panStart = null
+  mc.on('panstart', function (e) {
+    // 获取拖动的起始位置
+    const center = e.center
+    panStart = {
+      x: center.x - app.view.offsetLeft,
+      y: center.y - app.view.offsetTop,
+    }
+  })
+  mc.on('panmove', function (e) {
+    // 获取拖动的位置
+    const center = e.center
+    const panEnd = {
+      x: center.x - app.view.offsetLeft,
+      y: center.y - app.view.offsetTop,
+    }
+    // 计算拖动的距离
+    const dx = panEnd.x - panStart.x
+    const dy = panEnd.y - panStart.y
+
+    container.position.x += dx
+    container.position.y += dy
+    // 更新拖动的起始位置
+    panStart = panEnd
+  })
+  mc.on('panend', function (e) {
+    // 获取拖动的位置
+    panStart = null
+  })
+
+  // 处理缩放事件
+  let initialScale = null
+  mc.on('pinchstart', function (e) {
+    initialScale = container.scale.x
+  })
+
+  mc.on('pinchmove', function (e) {
+    //计算缩放因子
+    const newScale = e.scale * initialScale
+    //计算中心点
+    const center = new PIXI.Point(e.center.x, e.center.y)
+    //将中心点从屏幕坐标转换为容器坐标
+    const localPoint = container.toLocal(center)
+    //缩放容器
+    container.scale.set(newScale)
+    //计算缩放后的中心点
+    const newCenter = container.toGlobal(localPoint)
+    //将容器的中心点移动到新中心点
+    container.position.x += center.x - newCenter.x
+    container.position.y += center.y - newCenter.y
+    // 移动容器位置
+  })
+  mc.on('pinchend', function (e) {
+    initialScale = null
+  })
+
+  // 处理旋转事件
+  // 保存旋转的中心点
+  let rotationCenter = null
+  // 保存旋转的角度
+  let preRotation = 0
+
+  mc.on('rotatestart', function (e) {
+    const center = e.center
+    rotationCenter = {
+      x: center.x - app.view.offsetLeft,
+      y: center.y - app.view.offsetTop,
+    }
+    preRotation = e.rotation
+  })
+  // 当双指旋转手势进行时，旋转图像
+  mc.on('rotatemove', function (event) {
+    if (rotationCenter) {
+      // 计算旋转角度
+      let angle = event.rotation * (Math.PI / 180)
+      let preRotationDeg = preRotation * (Math.PI / 180)
+      // 计算旋转中心点
+      let center = new PIXI.Point(rotationCenter.x, rotationCenter.y)
+      // 将中心点从屏幕坐标转换为容器坐标
+      let localPoint = container.toLocal(center)
+      // 计算旋转变化量
+      let rotationDiff = angle - preRotationDeg
+      // 旋转容器
+      container.rotation += rotationDiff
+      // 计算旋转后的中心点
+      let newCenter = container.toGlobal(localPoint)
+      // 将容器的中心点移动到新中心点
+      container.position.x += center.x - newCenter.x
+      container.position.y += center.y - newCenter.y
+    }
+    preRotation = event.rotation
+  })
+
+  // 当双指旋转手势结束时，清空旋转中心点
+  mc.on('rotateend', function () {
+    rotationCenter = null
+    preRotation = 0
+  })
 
   // 绘画模式
   let mode = 'add' // add: 添加，erase: 擦除
@@ -79,7 +207,7 @@ onMounted(() => {
         ctx.globalCompositeOperation = 'source-over'
         // ctx.beginPath()
         ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`
-        ctx.lineWidth = 1
+        ctx.lineWidth = 20
         ctx.lineCap = 'round'
         ctx.lineJoin = 'round'
         // ctx.moveTo(event.data.global.x, event.data.global.y)
@@ -94,25 +222,14 @@ onMounted(() => {
       ctx.lineJoin = 'round'
       ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${a})`
 
-      // 获取鼠标移动的位置
-      let { x, y } = event.data.global
+      // 画布坐标转换为容器坐标
+      let { x, y } = event.data.getLocalPosition(this.parent)
+
+      // 更新坐标点
       lastPoint = { x, y }
       ctx.beginPath()
-      ctx.moveTo(lastPoint.x * scale, lastPoint.y * scale)
+      ctx.moveTo(lastPoint.x, lastPoint.y)
       isDrawing = true
-    }
-
-    // 获取触点id
-    if (pointerCount === 2) {
-      start1 = {
-        x: event.data.originalEvent.touches[0].clientX,
-        y: event.data.originalEvent.touches[0].clientY,
-      }
-
-      start2 = {
-        x: event.data.originalEvent.touches[1].clientX,
-        y: event.data.originalEvent.touches[1].clientY,
-      }
     }
   }
 
@@ -121,36 +238,14 @@ onMounted(() => {
     let pointerCount = event.data.originalEvent.touches.length
     // 如果触点数量为1，则开始绘制
     if (pointerCount === 1 && isDrawing) {
-      // let { x, y } = event.data.getLocalPosition(this.parent)
-      let { x, y } = event.data.global
+      let { x, y } = event.data.getLocalPosition(this.parent)
 
-      ctx.lineTo(x * scale, y * scale)
+      ctx.lineTo(x, y)
       ctx.stroke()
       texture.update()
 
       // 更新坐标点
       lastPoint = { x, y }
-    }
-    // 如果触点数量为2，则控制旋转、缩放、移动
-    if (pointerCount === 2) {
-      let end1 = {
-        x: event.data.originalEvent.touches[0].clientX,
-        y: event.data.originalEvent.touches[0].clientY,
-      }
-      let end2 = {
-        x: event.data.originalEvent.touches[1].clientX,
-        y: event.data.originalEvent.touches[1].clientY,
-      }
-      let startDistance = getDistance(start1, start2)
-      let endDistance = getDistance(end1, end2)
-      // 缩放
-      if (
-        sp.scale.x + (endDistance - startDistance) / 1000 < 5 &&
-        sp.scale.x + (endDistance - startDistance) / 1000 > 0.5
-      ) {
-        sp.scale.x += (endDistance - startDistance) / 1000
-        sp.scale.y += (endDistance - startDistance) / 1000
-      }
     }
   }
 

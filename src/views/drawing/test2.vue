@@ -43,8 +43,8 @@ onMounted(() => {
   // 加载纹理并创建一个可拖动的精灵
   const sprite = PIXI.Sprite.from('assets/eggHead.png')
   // sprite设置位于container的中心点
-  sprite.anchor.set(0.5)
-  sprite.position.set(app.screen.width / 2, app.screen.height / 2)
+  // sprite.anchor.set(0.5)
+  // sprite.position.set(app.screen.width / 2, app.screen.height / 2)
 
   container.addChild(sprite)
 
