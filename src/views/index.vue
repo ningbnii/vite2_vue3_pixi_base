@@ -98,6 +98,7 @@
         />
         <h1>画板</h1>
         <van-cell title="test1" is-link to="/drawing/test1" />
+        <van-cell title="test2" is-link to="/drawing/test2" />
       </van-list>
     </div>
   </div>

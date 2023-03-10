@@ -6,6 +6,10 @@
 </template>
 <script setup>
 import * as PIXI from 'pixi.js'
+// import hammerjs
+import * as Hammer from 'hammerjs'
+// import gsap
+// import gsap from 'gsap'
 import '@pixi/graphics-extras'
 import { ref, onMounted, onUnmounted } from 'vue'
 
@@ -21,109 +25,144 @@ onMounted(() => {
     backgroundColor: 0x1099bb,
     antialias: true,
     autoDensity: true,
-    resolution: window.devicePixelRatio,
+    resolution: window.devicePixelRatio || 1,
   })
 
   myCanvas.value.appendChild(app.view)
   // 创建PIXI应用程序
   const container = new PIXI.Container()
-  // 设置container的中心点为屏幕中心点
-  // container.pivot.set(app.screen.width / 2, app.screen.height / 2)
+  container.interactive = true
+  container.hitArea = new PIXI.Rectangle(
+    0,
+    0,
+    app.screen.width,
+    app.screen.height
+  )
   app.stage.addChild(container)
 
   // 加载纹理并创建一个可拖动的精灵
   const sprite = PIXI.Sprite.from('assets/eggHead.png')
+  // sprite设置位于container的中心点
   sprite.anchor.set(0.5)
-  sprite.x = app.screen.width / 2
-  sprite.y = app.screen.height / 2
-  sprite.interactive = true
-  sprite.buttonMode = true
+  sprite.position.set(app.screen.width / 2, app.screen.height / 2)
+
   container.addChild(sprite)
 
-  // 定义变量
-  let isDragging = false
-  let previousPosition = null
-  let distance = 0
-  let rotation = 0
-  let scale = { x: 1, y: 1 }
+  // 创建hammer.js实例，绑定到renderer.view
+  const mc = new Hammer.Manager(app.view)
+  // 添加旋转手势
+  let rotate = new Hammer.Rotate()
+  mc.add(rotate)
+  // 添加缩放手势
+  let pinch = new Hammer.Pinch()
+  mc.add(pinch)
 
-  // 监听触摸事件
-  app.renderer.plugins.interaction.on('pointerdown', (event) => {
-    if (event.data.pointerType === 'touch') {
-      if (event.data.originalEvent.touches.length === 2) {
-        isDragging = true
-        previousPosition = event.data.originalEvent.touches
-        distance = getDistance(previousPosition)
-        rotation = getRotation(previousPosition)
-      }
+  let pan = new Hammer.Pan({ pointers: 2 }) // 2指拖动
+  mc.add(pan)
+  // 旋转和缩放同时触发
+  pinch.recognizeWith([rotate, pan])
+  rotate.recognizeWith([pan])
+
+  // 添加双指拖动手势
+  // 保存拖动的起始位置
+  let panStart = null
+  mc.on('panstart', function (e) {
+    // 获取拖动的起始位置
+    const center = e.center
+    panStart = {
+      x: center.x - app.view.offsetLeft,
+      y: center.y - app.view.offsetTop,
     }
   })
-
-  app.renderer.plugins.interaction.on('pointermove', (event) => {
-    if (isDragging && event.data.originalEvent.touches.length === 2) {
-      const currentPosition = event.data.originalEvent.touches
-      const newDistance = getDistance(currentPosition)
-      const newRotation = getRotation(currentPosition)
-      // 设置container的中心点为两个触摸点的中心点
-      // const center = getCenter(currentPosition)
-      // container.pivot.set(center.x, center.y)
-
-      const deltaScale = newDistance / distance
-      const deltaRotation = newRotation - rotation
-
-      scale.x *= deltaScale
-      scale.y *= deltaScale
-
-      sprite.scale.set(scale.x, scale.y)
-      sprite.rotation += deltaRotation
-
-      // 计算移动距离并应用到精灵位置
-      const dx = currentPosition[0].clientX - previousPosition[0].clientX
-      const dy = currentPosition[0].clientY - previousPosition[0].clientY
-      sprite.x += dx
-      sprite.y += dy
-
-      previousPosition = currentPosition
-      distance = newDistance
-      rotation = newRotation
+  mc.on('panmove', function (e) {
+    // 获取拖动的位置
+    const center = e.center
+    const panEnd = {
+      x: center.x - app.view.offsetLeft,
+      y: center.y - app.view.offsetTop,
     }
+    // 计算拖动的距离
+    const dx = panEnd.x - panStart.x
+    const dy = panEnd.y - panStart.y
+
+    container.position.x += dx
+    container.position.y += dy
+    // 更新拖动的起始位置
+    panStart = panEnd
+  })
+  mc.on('panend', function (e) {
+    // 获取拖动的位置
+    panStart = null
   })
 
-  app.renderer.plugins.interaction.on('pointerup', (event) => {
-    if (event.data.pointerType === 'touch') {
-      if (event.data.originalEvent.touches.length !== 2) {
-        isDragging = false
-        previousPosition = null
-        distance = 0
-        rotation = 0
-      }
-    }
+  // 处理缩放事件
+  let initialScale = null
+  mc.on('pinchstart', function (e) {
+    initialScale = container.scale.x
   })
 
-  // 计算两个点之间的距离
-  function getDistance(touches) {
-    const dx = touches[1].clientX - touches[0].clientX
-    const dy = touches[1].clientY - touches[0].clientY
-    return Math.sqrt(dx * dx + dy * dy)
-  }
+  mc.on('pinchmove', function (e) {
+    //计算缩放因子
+    const newScale = e.scale * initialScale
+    //计算中心点
+    const center = new PIXI.Point(e.center.x, e.center.y)
+    //将中心点从屏幕坐标转换为容器坐标
+    const localPoint = container.toLocal(center)
+    //缩放容器
+    container.scale.set(newScale)
+    //计算缩放后的中心点
+    const newCenter = container.toGlobal(localPoint)
+    //将容器的中心点移动到新中心点
+    container.position.x += center.x - newCenter.x
+    container.position.y += center.y - newCenter.y
+    // 移动容器位置
+  })
+  mc.on('pinchend', function (e) {
+    initialScale = null
+  })
 
-  // 计算两个点之间的旋转角度
-  function getRotation(touches) {
-    const dx = touches[1].clientX - touches[0].clientX
-    const dy = touches[1].clientY - touches[0].clientY
-    return Math.atan2(dy, dx)
-  }
+  // 处理旋转事件
+  // 保存旋转的中心点
+  let rotationCenter = null
+  // 保存旋转的角度
+  let preRotation = 0
 
-  // 计算所有触摸位置的中心点
-  function getCenter(positions) {
-    let x = 0
-    let y = 0
-    for (let i = 0; i < positions.length; i++) {
-      x += positions[i].x
-      y += positions[i].y
+  mc.on('rotatestart', function (e) {
+    const center = e.center
+    rotationCenter = {
+      x: center.x - app.view.offsetLeft,
+      y: center.y - app.view.offsetTop,
     }
-    return new PIXI.Point(x / positions.length, y / positions.length)
-  }
+    preRotation = e.rotation
+  })
+  // 当双指旋转手势进行时，旋转图像
+  mc.on('rotatemove', function (event) {
+    if (rotationCenter) {
+      // 计算旋转角度
+      let angle = event.rotation * (Math.PI / 180)
+      let preRotationDeg = preRotation * (Math.PI / 180)
+      // 计算旋转中心点
+      let center = new PIXI.Point(rotationCenter.x, rotationCenter.y)
+      // 将中心点从屏幕坐标转换为容器坐标
+      let localPoint = container.toLocal(center)
+      // 计算旋转变化量
+      let rotationDiff = angle - preRotationDeg
+      // 旋转容器
+      container.rotation += rotationDiff
+      // 计算旋转后的中心点
+      let newCenter = container.toGlobal(localPoint)
+      // 将容器的中心点移动到新中心点
+      container.position.x += center.x - newCenter.x
+      container.position.y += center.y - newCenter.y
+    }
+    preRotation = event.rotation
+  })
+
+  // 当双指旋转手势结束时，清空旋转中心点
+  mc.on('rotateend', function () {
+    rotationCenter = null
+    preRotation = 0
+  })
 })
 
 onUnmounted(() => {

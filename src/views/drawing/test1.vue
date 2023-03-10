@@ -26,8 +26,8 @@ onMounted(() => {
 
   myCanvas.value.appendChild(app.view)
 
-  let scale = window.devicePixelRatio / 2
-  scale = 1
+  let scale = window.devicePixelRatio
+  // scale = 1
 
   // 创建绘制画布
   let canvas = document.createElement('canvas')
@@ -51,7 +51,7 @@ onMounted(() => {
   app.stage.addChild(sp)
 
   // 绘画模式
-  let mode = 'add'
+  let mode = 'add' // add: 添加，erase: 擦除
   // 初始坐标
   let lastPoint = { x: 0, y: 0 }
   // 是否绘制中
