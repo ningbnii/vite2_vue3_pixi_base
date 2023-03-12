@@ -8,7 +8,7 @@
 import * as PIXI from 'pixi.js'
 // import hammerjs
 import * as Hammer from 'hammerjs'
-import '@pixi/graphics-extras'
+// import '@pixi/graphics-extras'
 import { ref, onMounted, onUnmounted } from 'vue'
 
 let myCanvas = ref(null)
@@ -186,9 +186,9 @@ onMounted(() => {
   let isDrawing = false
 
   // 交互行为
-  sp.on('pointerdown', drawStart)
-  sp.on('pointermove', drawMove)
-  sp.on('pointerup', drawEnd)
+  container.on('pointerdown', drawStart)
+  container.on('pointermove', drawMove)
+  container.on('pointerup', drawEnd)
   let start1 = {}
   let start2 = {}
 
